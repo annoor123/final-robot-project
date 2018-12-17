@@ -5,29 +5,19 @@
 
 //  Preprocessor directives
 #include "MeMegaPi.h"
-
-MeUltrasonicSensor ultraSensor(PORT_7); // declare ultrasonic sensor as "FrontSensor" at Port 7
-
-MeMegaPiDCMotor motor1(PORT1A); // 4 physical motors are divided into 8 "logical" motors
-
+MeMegaPiDCMotor motor1(PORT1A);
 MeMegaPiDCMotor rightSide(PORT1B);
-
-MeMegaPiDCMotor motor3(PORT2A);
-
-MeMegaPiDCMotor leftSide(PORT2B);
-
-MeMegaPiDCMotor motor5(PORT3A);
-
+MeMegaPiDCMotor leftSide(PORT2A);
+MeMegaPiDCMotor motor4(PORT2B);
 MeMegaPiDCMotor gantry(PORT3B);
-
-MeMegaPiDCMotor motor7(PORT4A);
-
-MeMegaPiDCMotor gripper(PORT4B);
+MeMegaPiDCMotor motor_gripper(PORT4B);
+MeUltrasonicSensor ultraSensor(PORT_7);
 
 //  Declairation of variables
 uint8_t motorSpeed = 150;
 double distCriterion = 50.0;
 int sensorState;
+unsigned long time = 0;
 
 void setup()
 {
@@ -53,8 +43,8 @@ void loop()
  while(ultraSensor.distanceCm() < 13)
  {
  
-  motor1.run(motorSpeed); /* value: between -255 and 255. */
-  rightSide.run(motorSpeed); /* value: between -255 and 255. */
+  motor1.run(motorSpeed); // value: between -255 and 255.
+  rightSide.run(motorSpeed); // value: between -255 and 255.
   leftSide.run(-motorSpeed);
   motor4.run(-motorSpeed);
   delaystart = millis();
@@ -69,30 +59,30 @@ void loop()
   delay(1000);
  
  }
-while(ultraSensor.distanceCm()> 16 && ultraSensor.distanceCm()<60) 
+ while(ultraSensor.distanceCm()> 16 && ultraSensor.distanceCm()<60) //  This moves the robot towards the bottle until it is between 14 and 80 cm away  
  {
-  motor1.run(-motorSpeed); // value: between -255 and 255. 
-  rightSide.run(-motorSpeed); //value: between -255 and 255. 
+  motor1.run(-motorSpeed); // value: between -255 and 255.
+  rightSide.run(-motorSpeed); // value: between -255 and 255.
+  motor3.run(-motorSpeed);
   leftSide.run(-motorSpeed);
-  motor4.run(-motorSpeed);
   delay(500);
   
-  motor1.run(-motorSpeed); // value: between -255 and 255. 
-  rightSide.run(-motorSpeed); //value: between -255 and 255. 
+  motor1.run(-motorSpeed); // value: between -255 and 255.
+  rightSide.run(-motorSpeed); // value: between -255 and 255.
+  motor3.run(motorSpeed);
   leftSide.run(motorSpeed);
-  motor4.run(motorSpeed);
   delay(3000);
 
-  motor1.run(motorSpeed); // value: between -255 and 255. 
-  rightSide.run(motorSpeed); //value: between -255 and 255. 
+  motor1.run(motorSpeed); // value: between -255 and 255.
+  rightSide.run(motorSpeed); // value: between -255 and 255.
+  motor3.run(motorSpeed);
   leftSide.run(motorSpeed);
-  motor4.run(motorSpeed);
   delay(1250);
       
   motor1.stop();
   rightSide.stop();
+  motor3.stop();
   leftSide.stop();
-  motor4.stop();
   delay(500);
  }
   //  When an object is detected, robot stops moving then moves forward to the object
@@ -101,8 +91,8 @@ while(ultraSensor.distanceCm()> 16 && ultraSensor.distanceCm()<60)
     delay(300);
     motor1.stop();
     rightSide.stop();
-    motor3.stop();
     leftSide.stop();
+    motor4.stop();
 
     motor1.run(-motorSpeed);
     rightSide.run(-motorSpeed);
